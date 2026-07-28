@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Under My Skin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- 左カラム -->
+    <aside class="left">
+
+      <h1 class="title">
+        under<br>
+        my<br>
+        skin
+      </h1>
+
+      <nav class="menu">
+        <a href="profile.html" id="link-profile">profile</a>
+        <a href="gallery.html" id="link-gallery">gallery</a>
+        <a href="favorite.html" id="link-favorite">favorite</a>
+        <a href="contact.html" id="link-contact">contact</a>
+      </nav>
+
+    </aside>
+
+    <!-- 中央（スクロールエリア） -->
+    <main class="center">
+
+      <div class="xray">
+
+        <!-- 持ち物 -->
+
+        <img src="img/pencil.png" class="pencil" id="img-pencil" onclick="location.href='profile.html'">
+        <img src="img/card.png" alt="" class="card" id="img-card" onclick="location.href='card.html'">>
+        <img src="img/player.png" class="player" id="img-player" onclick="location.href='gallery.html'">
+        <img src="img/phon.png" alt="" class="phon" id="img-phon" onclick="location.href='phon.html'">>
+
+        <!-- レントゲン -->
+        <img src="img/bone.png" alt="" class="bone">
+
+      </div>
+
+    </main>
+
+    <!-- 右カラム（What's New） -->
+    <aside class="news-box">
+      <div class="chart-header">
+        <span class="chart-tag">DATA_TYPE: LOG</span>
+        <span class="chart-status">STATUS: COMPLETE</span>
+      </div>
+
+      <h2>What's New</h2>
+
+      <article>
+        <div class="article-meta">
+          <span class="date">2026.07.14</span>
+          <span class="scan-id">SCAN_ID: #001</span>
+        </div>
+        <h3>見出し</h3>
+        <p>文章が入ります。</p>
+      </article>
+    </aside>
+
+  </div>
+
+  <!-- 画面全体を覆うSVG（引き出し線） -->
+  <svg class="connection-lines" id="svg-lines"></svg>
+
+  <!-- 線を自動で引くためのJavaScript -->
+    <script>
+    const svg = document.getElementById('svg-lines');
+
+    const pairs = [
+      { start: 'link-profile', end: 'img-pencil' },
+      { start: 'link-gallery', end: 'img-player' },
+      { start: 'link-favorite', end: 'img-card' },
+      { start: 'link-contact', end: 'img-phon' }
+    ];
+
+    function drawLines() {
+      if (window.innerWidth <= 900) {
+        svg.innerHTML = '';
+        return;
+      }
+
+      const rectSvg = svg.getBoundingClientRect();
+      const fragment = document.createDocumentFragment();
+
+      pairs.forEach(pair => {
+        const startEl = document.getElementById(pair.start);
+        const endEl = document.getElementById(pair.end);
+
+        if (!startEl || !endEl) return;
+
+        const rStart = startEl.getBoundingClientRect();
+        const x1 = rStart.right - rectSvg.left;
+        const y1 = rStart.bottom - rectSvg.top;
+
+        const rEnd = endEl.getBoundingClientRect();
+        const x2 = rEnd.left + (rEnd.width / 2) - rectSvg.left;
+        const y2 = rEnd.top + (rEnd.height / 2) - rectSvg.top;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', '#111111');
+        line.setAttribute('stroke-width', '1');
+
+        fragment.appendChild(line);
+      });
+
+      svg.innerHTML = '';
+      svg.appendChild(fragment);
+    }
+
+    let ticking = false;
+    function onScrollOrResize() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          drawLines();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('load', drawLines);
+    window.addEventListener('resize', onScrollOrResize);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    </script>
+
+</body>
+
+</html>
